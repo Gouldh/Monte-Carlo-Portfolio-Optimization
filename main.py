@@ -2,10 +2,11 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
 
 # -----------------------------------------------------------------------------------
 # Author: Hunter Gould
-# Date: 10/31/23
+# Date: 11/01/23
 # Description: This project involves portfolio optimization using Monte Carlo simulation
 #              to identify an optimal investment portfolio that maximizes returns while
 #              minimizing risk. The project is an application of Modern Portfolio
@@ -16,11 +17,11 @@ import matplotlib.pyplot as plt
 #       initial portfolio or a benchmark.
 # -----------------------------------------------------------------------------------
 
-ASSETS = ['AAPL', 'MSFT', 'AGG', 'GLD']  # Example assets
+ASSETS = ['AAPL', 'MSFT', 'AGG', 'GLD', 'AMD', 'NVDA', 'TGT']  # Example assets
 START_DATE = '2020-01-01'
 END_DATE = '2023-01-01'
 MARKET_REPRESENTATION = 'SPY'
-NUM_PORTFOLIOS = 10_000
+NUM_PORTFOLIOS = 100_000
 RISK_FREE_RATE = 0  # Assuming risk-free rate is 0 for simplicity
 
 
@@ -77,6 +78,8 @@ optimal_weights = weights_record[:, optimal_idx]
 
 # Visualization
 plt.figure(figsize=(12, 8))
+plt.gca().xaxis.set_major_formatter(FuncFormatter(lambda x, _: '{:.1f}%'.format(x * 100)))
+plt.gca().yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1f}%'.format(y * 100)))
 plt.scatter(simulated_portfolios['Volatility'], simulated_portfolios['Return'], c=simulated_portfolios['Sharpe Ratio'], cmap='YlGnBu')
 plt.colorbar(label='Sharpe Ratio')
 plt.xlabel('Volatility')
@@ -91,11 +94,11 @@ plt.gcf().text(0.14, 0.86, weight_text, fontsize=10, verticalalignment='top', bb
 
 # Displaying Optimized Portfolio Performance
 optimal_text = f"Optimized Portfolio\nReturn: {optimal_portfolio['Return'] * 100:.2f}%\nVolatility: {optimal_portfolio['Volatility'] * 100:.2f}%\nSharpe Ratio: {optimal_portfolio['Sharpe Ratio']:.2f}"
-plt.gcf().text(0.14, 0.74, optimal_text, fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", edgecolor='green', facecolor='white'), ha='left')
+plt.gcf().text(0.14, (0.86 - 0.02 - (len(ASSETS) + 1) * 0.02), optimal_text, fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", edgecolor='green', facecolor='white'), ha='left')
 
 # Displaying Market (SPY) Performance
-market_text = f"Market (SPY)\nReturn: {market_return * 100:.2f}%\nVolatility: {market_volatility * 100:.2f}%\nSharpe Ratio: {market_sharpe_ratio:.2f}"
-plt.gcf().text(0.14, 0.64, market_text, fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", edgecolor='red', facecolor='white'), ha='left')
+market_text = f"Market ({MARKET_REPRESENTATION})\nReturn: {market_return * 100:.2f}%\nVolatility: {market_volatility * 100:.2f}%\nSharpe Ratio: {market_sharpe_ratio:.2f}"
+plt.gcf().text(0.14, (0.86 - 0.12 - (len(ASSETS) + 1) * 0.02), market_text, fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", edgecolor='red', facecolor='white'), ha='left')
 
 # Display Full Chart
 plt.show()

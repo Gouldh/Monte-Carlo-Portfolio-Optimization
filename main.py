@@ -26,10 +26,10 @@ RISK_FREE_RATE = 0  # Assuming risk-free rate is 0 for simplicity
 
 
 # Data Collection for Assets
-data = yf.download(ASSETS, start=START_DATE, end=END_DATE)['Adj Close']
+data = yf.download(ASSETS, start=START_DATE, end=END_DATE, auto_adjust=True)['Close']
 
 # Data Collection for Market (SPY)
-market_data = yf.download(MARKET_REPRESENTATION, start=START_DATE, end=END_DATE)['Adj Close']
+market_data = yf.download(MARKET_REPRESENTATION, start=START_DATE, end=END_DATE, auto_adjust=True)['Close']
 
 # Calculate daily returns
 daily_returns = data.pct_change().dropna()
